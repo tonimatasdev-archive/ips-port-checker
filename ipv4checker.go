@@ -70,14 +70,12 @@ func checkRange(min string, max string, minPort int, maxPort int, interval time.
 	int4max, _ := strconv.Atoi(splitMax[3])
 
 	total = countIps(int1, int2, int3, int4, int1max, int2max, int3max, int4max) * (maxPort - minPort)
-
 	fmt.Println("Total ports to check:", total)
 
 	go checkInfo()
 
 	for {
-		ipStr := strconv.Itoa(int1) + "." + strconv.Itoa(int2) + "." + strconv.Itoa(int3) + "." + strconv.Itoa(int4)
-
+		ipStr := fmt.Sprintf("%d.%d.%d.%d", int1, int2, int3, int4)
 		port := minPort
 
 		for {
@@ -103,16 +101,13 @@ func checkRange(min string, max string, minPort int, maxPort int, interval time.
 
 		if int2 == 255 && int3 == 255 && int4 == 255 {
 			int1++
-			int2 = 0
-			int3 = 0
-			int4 = 0
+			int2, int3, int4 = 0, 0, 0
 			continue
 		}
 
 		if int3 == 255 && int4 == 255 {
 			int2++
-			int3 = 0
-			int4 = 0
+			int3, int4 = 0, 0
 			continue
 		}
 
@@ -125,12 +120,10 @@ func checkRange(min string, max string, minPort int, maxPort int, interval time.
 		int4++
 	}
 
-	msToStart := time.Now().UnixMilli() - startMilli
-	msToStartStr := strconv.Itoa(int(msToStart))
-
 	time.Sleep(2 * time.Second)
 
-	fmt.Println("Range " + min + " to " + max + ". Connection checked to " + strconv.Itoa(checked) + " ips and ports. In " + msToStartStr + "ms")
+	msToStart := time.Now().UnixMilli() - startMilli
+	fmt.Printf("Range %s to %s. Connection checked to %d ips and ports. In %dms\n", min, max, checked, msToStart)
 }
 
 func countIps(int1 int, int2 int, int3 int, int4 int, int1max int, int2max int, int3max int, int4max int) int {
@@ -149,16 +142,13 @@ func countIps(int1 int, int2 int, int3 int, int4 int, int1max int, int2max int, 
 
 		if int2 == 255 && int3 == 255 && int4 == 255 {
 			int1++
-			int2 = 0
-			int3 = 0
-			int4 = 0
+			int2, int3, int4 = 0, 0, 0
 			continue
 		}
 
 		if int3 == 255 && int4 == 255 {
 			int2++
-			int3 = 0
-			int4 = 0
+			int3, int4 = 0, 0
 			continue
 		}
 
@@ -185,8 +175,7 @@ func checkInfo() {
 			remaining = 0
 		}
 
-		fmt.Println("Remaining: " + strconv.Itoa(remaining) + " Checked: " + strconv.Itoa(totalChecked) + " Per second: " + strconv.Itoa(checked))
-
+		fmt.Printf("Remaining: %d Checked: %d Per second: %d\n", remaining, totalChecked, checked)
 		checked = 0
 
 		if remaining == 0 || totalChecked >= total {
@@ -197,11 +186,12 @@ func checkInfo() {
 
 func checkConn(ip string, port string) {
 	conn, err := net.DialTimeout("tcp", ip+":"+port, 500*time.Millisecond)
+
 	if err != nil {
 		return
 	}
 
 	defer conn.Close()
 
-	fmt.Println("Server found in " + ip + ":" + port + ".")
+	fmt.Printf("Server found in %s:%s.\n", ip, port)
 }
