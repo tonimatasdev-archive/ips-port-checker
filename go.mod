@@ -1,1 +1,1 @@
-module github.com/TonimatasDEV/Things
+module github.com/TonimatasDEV/ips-port-checker
