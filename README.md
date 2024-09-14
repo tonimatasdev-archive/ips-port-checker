@@ -1,4 +1,4 @@
-[![Hits](https://hits.sh/github.com/tonimatasdev/ips-port-checker.svg)](https://hits.sh/github.com/tonimatasdev/ips-port-checker/)
+[![Hits](https://hits.sh/github.com/tonimatasdev-archive/ips-port-checker.svg)](https://hits.sh/github.com/tonimatasdev-archive/ips-port-checker/)
 # Ips port checker
 Project to learn random things in go.
 
